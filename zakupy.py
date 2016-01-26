@@ -10,10 +10,14 @@ def parse_csv(path):
         for products, volumes in reader:
             for prod, vol in zip(products.split('\n'), volumes.split('\n')):
                 key = prod.strip().lower()
+                vol = vol.strip().lower()
                 try:
                     data[key] += int(vol)
                 except ValueError:
-                    data[key] += 0
+                    if 'ml' in vol:
+                        data[key] += int(vol.split()[0])
+                    else:
+                        data[key] += 0
 
     return data
 
@@ -21,7 +25,10 @@ def parse_csv(path):
 def main(args):
     data = parse_csv(args[0])
     for product, volume in sorted(data.items()):
-        print "{}: {}g".format(product, volume)
+        if not product:
+            continue
+        # print "{}: {}g".format(product, volume)
+        print volume
 
 
 if __name__ == '__main__':
